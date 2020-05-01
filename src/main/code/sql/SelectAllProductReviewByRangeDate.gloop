@@ -1,0 +1,69 @@
+{
+    "type": "customSql",
+    "input": [
+        {
+            "name": "selectAllProductReviewByRangeDateInput",
+            "type": "model",
+            "gloopProperties": [
+                {
+                    "name": "$martiniConnectionPool"
+                },
+                {
+                    "name": "$limit",
+                    "type": "integer"
+                },
+                {
+                    "name": "startDate",
+                    "type": "date"
+                },
+                {
+                    "name": "endDate",
+                    "type": "date"
+                }
+            ]
+        }
+    ],
+    "output": [
+        {
+            "name": "selectAllProductReviewByRangeDateInputCursor",
+            "type": "model",
+            "array": true,
+            "gloopProperties": [
+                {
+                    "name": "ID",
+                    "required": true,
+                    "allowNull": false
+                },
+                {
+                    "name": "PRODUCT_GUID",
+                    "required": true,
+                    "allowNull": false
+                },
+                {
+                    "name": "RATING",
+                    "type": "integer",
+                    "required": true,
+                    "allowNull": false
+                },
+                {
+                    "name": "REVIEW",
+                    "required": true,
+                    "allowNull": false
+                },
+                {
+                    "name": "REVIEWER",
+                    "required": true,
+                    "allowNull": false
+                },
+                {
+                    "name": "REVIEW_DATE",
+                    "type": "date",
+                    "required": true
+                }
+            ]
+        }
+    ],
+    "connectionPoolName": "product_review",
+    "sqlType": "SELECT_MULTI",
+    "query": "SELECT\n\t*\nFROM\n\t\"PRODUCT_REVIEW\"\nWHERE\n\t\"REVIEW_DATE\" BETWEEN \n\t\tCAST( :startDate AS DATE ) \n\t\tAND\n\t\tCAST( :endDate AS DATE )"
+}

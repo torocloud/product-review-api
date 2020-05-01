@@ -1,0 +1,255 @@
+{
+    "info": {
+        "version": "1.0.0-SNAPSHOT"
+    },
+    "basePath": "/ProductReview",
+    "paths": {
+        "/product/review": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "body": "APIResponse",
+                        "description": "Successfully get all product review"
+                    }
+                },
+                "operationType": "gloop",
+                "operationLocation": "api.service.GetAllProductReview",
+                "responseCodeField": "responseCode"
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "bodyParameter": {
+                    "name": "productReview",
+                    "description": "productReview"
+                },
+                "responses": {
+                    "200": {
+                        "body": "APIResponse",
+                        "description": "Successfully update product review"
+                    },
+                    "400": {
+                        "body": "APIException",
+                        "description": "Failed to update product review"
+                    }
+                },
+                "operationType": "gloop",
+                "operationLocation": "api.service.UpdateProductReview",
+                "responseCodeField": "responseCode"
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "bodyParameter": {
+                    "name": "productReview",
+                    "description": "productReview"
+                },
+                "responses": {
+                    "200": {
+                        "body": "APIResponse",
+                        "description": "Successfully added product review"
+                    },
+                    "400": {
+                        "body": "APIException",
+                        "description": "Failed to create product review"
+                    }
+                },
+                "operationType": "gloop",
+                "operationLocation": "api.service.AddProductReview",
+                "responseCodeField": "responseCode"
+            }
+        },
+        "/product/review/{productReviewId}": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "productReviewId",
+                        "type": "PATH"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "body": "APIResponse",
+                        "description": "Successfully get product review"
+                    },
+                    "404": {
+                        "body": "APIException",
+                        "description": "No product review found"
+                    }
+                },
+                "operationType": "gloop",
+                "operationLocation": "api.service.GetProductReview",
+                "responseCodeField": "responseCode"
+            },
+            "delete": {
+                "parameters": [
+                    {
+                        "name": "productReviewId",
+                        "type": "PATH"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "body": "APIResponse",
+                        "description": "Successfully delete product review"
+                    }
+                },
+                "operationType": "gloop",
+                "operationLocation": "api.service.DeleteProductReview",
+                "responseCodeField": "responseCode"
+            }
+        },
+        "/product/reviews/{productGuid}": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "productGuid",
+                        "type": "PATH"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "body": "APIResponse",
+                        "description": "Successfully get all product review"
+                    },
+                    "400": {
+                        "body": "APIException",
+                        "description": "Failed to get all product review"
+                    }
+                },
+                "operationType": "gloop",
+                "operationLocation": "api.service.GetAllProductReviewByReference",
+                "responseCodeField": "responseCode"
+            }
+        },
+        "/product/reviews/{productGuid}/average": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "productGuid",
+                        "type": "PATH"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "body": "APIResponse",
+                        "description": "Successfully get product review average"
+                    },
+                    "400": {
+                        "body": "APIException",
+                        "description": "Failed to get product review average"
+                    }
+                },
+                "operationType": "gloop",
+                "operationLocation": "api.service.GetProductReviewAverage",
+                "responseCodeField": "responseCode"
+            }
+        },
+        "/product/reviews/{productGuid}/count": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "productGuid",
+                        "type": "PATH"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "body": "APIResponse",
+                        "description": "Successfully get total review"
+                    },
+                    "400": {
+                        "body": "APIException",
+                        "description": "Failed to get total review"
+                    }
+                },
+                "operationType": "gloop",
+                "operationLocation": "api.service.GetTotalProductReview",
+                "responseCodeField": "responseCode"
+            }
+        },
+        "/product/average": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "body": "APIResponse",
+                        "description": "Successfully get all product average"
+                    },
+                    "400": {
+                        "body": "APIException",
+                        "description": "Failed to get all product average"
+                    }
+                },
+                "operationType": "gloop",
+                "operationLocation": "api.service.GetAllProductAverage",
+                "responseCodeField": "responseCode"
+            }
+        },
+        "/product/reviews/range": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "start_date",
+                        "type": "QUERY"
+                    },
+                    {
+                        "name": "end_date",
+                        "type": "QUERY"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "body": "APIResponse",
+                        "description": "Successfully get all product review"
+                    },
+                    "400": {
+                        "body": "APIException",
+                        "description": "Failed to get all product review"
+                    }
+                },
+                "operationType": "gloop",
+                "operationLocation": "api.service.GetAllProductReviewByRangedDate",
+                "responseCodeField": "responseCode"
+            }
+        },
+        "/product/reviews/{productGuid}/range": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "productGuid",
+                        "type": "PATH"
+                    },
+                    {
+                        "name": "start_date",
+                        "type": "QUERY"
+                    },
+                    {
+                        "name": "end_date",
+                        "type": "QUERY"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "body": "APIResponse",
+                        "description": "Successfully get all product review"
+                    },
+                    "400": {
+                        "body": "APIException",
+                        "description": "Failed to get all product review"
+                    }
+                },
+                "operationType": "gloop",
+                "operationLocation": "api.service.GetProductReviewByRangeDate",
+                "responseCodeField": "responseCode"
+            }
+        }
+    }
+}

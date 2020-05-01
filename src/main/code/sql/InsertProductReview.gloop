@@ -1,0 +1,53 @@
+{
+    "type": "customSql",
+    "input": [
+        {
+            "name": "insertProductReviewInput",
+            "type": "model",
+            "gloopProperties": [
+                {
+                    "name": "$martiniConnectionPool"
+                },
+                {
+                    "name": "$getGeneratedKeys",
+                    "type": "boolean",
+                    "defaultValue": false
+                },
+                {
+                    "name": "id"
+                },
+                {
+                    "name": "productGuid"
+                },
+                {
+                    "name": "rating",
+                    "type": "integer"
+                },
+                {
+                    "name": "review"
+                },
+                {
+                    "name": "reviewer"
+                },
+                {
+                    "name": "reviewDate",
+                    "type": "date"
+                }
+            ]
+        }
+    ],
+    "output": [
+        {
+            "name": "updateCount",
+            "type": "integer"
+        },
+        {
+            "name": "generatedKeys",
+            "type": "model",
+            "allowExtraProperties": true
+        }
+    ],
+    "connectionPoolName": "product_review",
+    "sqlType": "INSERT",
+    "query": "INSERT INTO \"PRODUCT_REVIEW\" (\n\t\"ID\",\n\t\"PRODUCT_GUID\",\n\t\"RATING\",\n\t\"REVIEW\",\n\t\"REVIEWER\",\n\t\"REVIEW_DATE\"\n) VALUES (\n\t:id,\n\t:productGuid,\n\t:rating,\n\t:review,\n\t:reviewer,\n\t:reviewDate\n)"
+}

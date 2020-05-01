@@ -1,0 +1,26 @@
+{
+    "type": "customSql",
+    "input": [
+        {
+            "name": "deleteProductReviewInput",
+            "type": "model",
+            "gloopProperties": [
+                {
+                    "name": "$martiniConnectionPool"
+                },
+                {
+                    "name": "id"
+                }
+            ]
+        }
+    ],
+    "output": [
+        {
+            "name": "updateCount",
+            "type": "integer"
+        }
+    ],
+    "connectionPoolName": "product_review",
+    "sqlType": "DELETE",
+    "query": "DELETE\nFROM\n\t\"PRODUCT_REVIEW\"\nWHERE\n\t\"ID\" = :id"
+}

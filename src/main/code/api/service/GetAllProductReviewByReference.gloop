@@ -1,0 +1,263 @@
+{
+    "input": [
+        {
+            "name": "productGuid"
+        }
+    ],
+    "output": [
+        {
+            "name": "responseCode",
+            "type": "integer"
+        },
+        {
+            "name": "APIResponse",
+            "type": "model",
+            "reference": "io.toro.martini.api.APIResponse",
+            "gloopProperties": [
+                {
+                    "name": "productReview",
+                    "type": "model",
+                    "array": true,
+                    "reference": "model.ProductReview"
+                }
+            ]
+        },
+        {
+            "name": "APIException",
+            "type": "model",
+            "reference": "io.toro.martini.api.APIException"
+        }
+    ],
+    "steps": [
+        {
+            "type": "block",
+            "blockType": "TRY_CATCH",
+            "children": [
+                {
+                    "type": "invokeGloop",
+                    "name": "sql.SelectAllProductReviewByReference",
+                    "declare": [
+                        {
+                            "variables": [
+                                {
+                                    "name": "selectAllProductReviewByReferenceInputCursor",
+                                    "type": "model",
+                                    "array": true,
+                                    "gloopProperties": [
+                                        {
+                                            "name": "ID",
+                                            "required": true,
+                                            "allowNull": false
+                                        },
+                                        {
+                                            "name": "PRODUCT_GUID",
+                                            "required": true,
+                                            "allowNull": false
+                                        },
+                                        {
+                                            "name": "RATING",
+                                            "type": "integer",
+                                            "required": true,
+                                            "allowNull": false
+                                        },
+                                        {
+                                            "name": "REVIEW",
+                                            "required": true,
+                                            "allowNull": false
+                                        },
+                                        {
+                                            "name": "REVIEWER",
+                                            "required": true,
+                                            "allowNull": false
+                                        },
+                                        {
+                                            "name": "REVIEW_DATE",
+                                            "type": "date",
+                                            "required": true
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "inputs": [
+                        {
+                            "from": [
+                                "productGuid"
+                            ],
+                            "to": [
+                                "selectAllProductReviewByReferenceInput",
+                                "productGuid"
+                            ]
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "from": [
+                                "selectAllProductReviewByReferenceInputCursor"
+                            ],
+                            "to": [
+                                "selectAllProductReviewByReferenceInputCursor"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "iterate",
+                    "input": {
+                        "path": [
+                            "selectAllProductReviewByReferenceInputCursor"
+                        ]
+                    },
+                    "output": {
+                        "path": [
+                            "APIResponse",
+                            "productReview"
+                        ]
+                    },
+                    "children": [
+                        {
+                            "lines": [
+                                {
+                                    "from": [
+                                        "selectAllProductReviewByReferenceInputCursor",
+                                        "ID"
+                                    ],
+                                    "to": [
+                                        "APIResponse",
+                                        "productReview",
+                                        "id"
+                                    ]
+                                },
+                                {
+                                    "from": [
+                                        "selectAllProductReviewByReferenceInputCursor",
+                                        "PRODUCT_GUID"
+                                    ],
+                                    "to": [
+                                        "APIResponse",
+                                        "productReview",
+                                        "product_guid"
+                                    ]
+                                },
+                                {
+                                    "from": [
+                                        "selectAllProductReviewByReferenceInputCursor",
+                                        "RATING"
+                                    ],
+                                    "to": [
+                                        "APIResponse",
+                                        "productReview",
+                                        "rating"
+                                    ]
+                                },
+                                {
+                                    "from": [
+                                        "selectAllProductReviewByReferenceInputCursor",
+                                        "REVIEW"
+                                    ],
+                                    "to": [
+                                        "APIResponse",
+                                        "productReview",
+                                        "review"
+                                    ]
+                                },
+                                {
+                                    "from": [
+                                        "selectAllProductReviewByReferenceInputCursor",
+                                        "REVIEWER"
+                                    ],
+                                    "to": [
+                                        "APIResponse",
+                                        "productReview",
+                                        "reviewer"
+                                    ]
+                                },
+                                {
+                                    "from": [
+                                        "selectAllProductReviewByReferenceInputCursor",
+                                        "REVIEW_DATE"
+                                    ],
+                                    "to": [
+                                        "APIResponse",
+                                        "productReview",
+                                        "review_date"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "lines": [
+                        {
+                            "type": "set",
+                            "expression": "200",
+                            "to": [
+                                "responseCode"
+                            ]
+                        },
+                        {
+                            "type": "set",
+                            "expression": "Successfully get all product review",
+                            "to": [
+                                "APIResponse",
+                                "message"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "catch": [
+                {
+                    "lines": [
+                        {
+                            "type": "set",
+                            "expression": "400",
+                            "to": [
+                                "responseCode"
+                            ]
+                        },
+                        {
+                            "type": "set",
+                            "expression": "Failed to get all product review",
+                            "to": [
+                                "APIException",
+                                "message"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "invokeCode",
+                    "className": "io.toro.martini.LoggerMethods",
+                    "methodName": "error",
+                    "parameters": [
+                        "java.lang.String",
+                        "java.lang.Throwable"
+                    ],
+                    "inputs": [
+                        {
+                            "from": [
+                                "$gloopException",
+                                "gloopStackTrace"
+                            ],
+                            "to": [
+                                "message"
+                            ]
+                        },
+                        {
+                            "from": [
+                                "$gloopException",
+                                "realException"
+                            ],
+                            "to": [
+                                "throwable"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

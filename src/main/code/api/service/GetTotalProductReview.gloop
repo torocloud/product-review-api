@@ -1,0 +1,160 @@
+{
+    "input": [
+        {
+            "name": "productGuid"
+        }
+    ],
+    "output": [
+        {
+            "name": "responseCode",
+            "type": "integer"
+        },
+        {
+            "name": "APIResponse",
+            "type": "model",
+            "reference": "io.toro.martini.api.APIResponse",
+            "gloopProperties": [
+                {
+                    "name": "totalReview",
+                    "type": "integer"
+                }
+            ]
+        },
+        {
+            "name": "APIException",
+            "type": "model",
+            "reference": "io.toro.martini.api.APIException"
+        }
+    ],
+    "steps": [
+        {
+            "type": "block",
+            "blockType": "TRY_CATCH",
+            "children": [
+                {
+                    "type": "invokeGloop",
+                    "name": "sql.SelectCountProductReview",
+                    "inputs": [
+                        {
+                            "from": [
+                                "productGuid"
+                            ],
+                            "to": [
+                                "selectCountProductReviewInput",
+                                "productGuid"
+                            ]
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "from": [
+                                "selectCountProductReviewOutput",
+                                "TOTAL_REVIEW"
+                            ],
+                            "to": [
+                                "APIResponse",
+                                "totalReview"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "fork",
+                    "expression": "APIResponse.totalReview",
+                    "children": [
+                        {
+                            "label": "$null",
+                            "lines": [
+                                {
+                                    "type": "set",
+                                    "expression": "400",
+                                    "to": [
+                                        "responseCode"
+                                    ]
+                                },
+                                {
+                                    "type": "set",
+                                    "expression": "Failed to get total review",
+                                    "to": [
+                                        "APIException",
+                                        "message"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "label": "$else",
+                            "lines": [
+                                {
+                                    "type": "set",
+                                    "expression": "200",
+                                    "to": [
+                                        "responseCode"
+                                    ]
+                                },
+                                {
+                                    "type": "set",
+                                    "expression": "Successfully get total review",
+                                    "to": [
+                                        "APIResponse",
+                                        "message"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "catch": [
+                {
+                    "lines": [
+                        {
+                            "type": "set",
+                            "expression": "Failed to get total review",
+                            "to": [
+                                "APIException",
+                                "message"
+                            ]
+                        },
+                        {
+                            "type": "set",
+                            "expression": "400",
+                            "to": [
+                                "responseCode"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "invokeCode",
+                    "className": "io.toro.martini.LoggerMethods",
+                    "methodName": "error",
+                    "parameters": [
+                        "java.lang.String",
+                        "java.lang.Throwable"
+                    ],
+                    "inputs": [
+                        {
+                            "from": [
+                                "$gloopException",
+                                "gloopStackTrace"
+                            ],
+                            "to": [
+                                "message"
+                            ]
+                        },
+                        {
+                            "from": [
+                                "$gloopException",
+                                "realException"
+                            ],
+                            "to": [
+                                "throwable"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,384 @@
+{
+    "input": [
+        {
+            "name": "productReview",
+            "type": "model",
+            "reference": "model.ProductReview"
+        }
+    ],
+    "output": [
+        {
+            "name": "responseCode",
+            "type": "integer"
+        },
+        {
+            "name": "APIResponse",
+            "type": "model",
+            "reference": "io.toro.martini.api.APIResponse",
+            "gloopProperties": [
+                {
+                    "name": "productReview",
+                    "type": "model",
+                    "reference": "model.ProductReview"
+                }
+            ]
+        },
+        {
+            "name": "APIException",
+            "type": "model",
+            "reference": "io.toro.martini.api.APIException"
+        }
+    ],
+    "steps": [
+        {
+            "type": "block",
+            "blockType": "TRY_CATCH",
+            "children": [
+                {
+                    "declare": [
+                        {
+                            "variables": [
+                                {
+                                    "name": "limit",
+                                    "type": "integer"
+                                }
+                            ]
+                        }
+                    ],
+                    "lines": [
+                        {
+                            "type": "set",
+                            "expression": "UUID.randomUUID()",
+                            "evaluate": true,
+                            "to": [
+                                "productReview",
+                                "id"
+                            ]
+                        },
+                        {
+                            "type": "set",
+                            "expression": "'rate.limit'.getPackageProperty()",
+                            "evaluate": true,
+                            "to": [
+                                "limit"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "fork",
+                    "expression": "limit < productReview.rating",
+                    "children": [
+                        {
+                            "type": "block",
+                            "label": "true",
+                            "children": [
+                                {
+                                    "lines": [
+                                        {
+                                            "type": "set",
+                                            "expression": "400",
+                                            "to": [
+                                                "responseCode"
+                                            ]
+                                        },
+                                        {
+                                            "type": "set",
+                                            "expression": "Rating exceed the rate limit",
+                                            "to": [
+                                                "APIException",
+                                                "message"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "break",
+                                    "expression": "$gloopService"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "invokeGloop",
+                    "name": "sql.InsertProductReview",
+                    "inputs": [
+                        {
+                            "from": [
+                                "productReview",
+                                "review_date"
+                            ],
+                            "to": [
+                                "insertProductReviewInput",
+                                "reviewDate"
+                            ]
+                        },
+                        {
+                            "from": [
+                                "productReview",
+                                "reviewer"
+                            ],
+                            "to": [
+                                "insertProductReviewInput",
+                                "reviewer"
+                            ]
+                        },
+                        {
+                            "from": [
+                                "productReview",
+                                "review"
+                            ],
+                            "to": [
+                                "insertProductReviewInput",
+                                "review"
+                            ]
+                        },
+                        {
+                            "from": [
+                                "productReview",
+                                "rating"
+                            ],
+                            "to": [
+                                "insertProductReviewInput",
+                                "rating"
+                            ]
+                        },
+                        {
+                            "from": [
+                                "productReview",
+                                "product_guid"
+                            ],
+                            "to": [
+                                "insertProductReviewInput",
+                                "productGuid"
+                            ]
+                        },
+                        {
+                            "from": [
+                                "productReview",
+                                "id"
+                            ],
+                            "to": [
+                                "insertProductReviewInput",
+                                "id"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "invokeGloop",
+                    "name": "sql.SelectProductReview",
+                    "declare": [
+                        {
+                            "variables": [
+                                {
+                                    "name": "selectProductReviewOutput",
+                                    "type": "model",
+                                    "gloopProperties": [
+                                        {
+                                            "name": "ID",
+                                            "required": true,
+                                            "allowNull": false
+                                        },
+                                        {
+                                            "name": "PRODUCT_GUID",
+                                            "required": true,
+                                            "allowNull": false
+                                        },
+                                        {
+                                            "name": "RATING",
+                                            "type": "integer",
+                                            "required": true,
+                                            "allowNull": false
+                                        },
+                                        {
+                                            "name": "REVIEW",
+                                            "required": true,
+                                            "allowNull": false
+                                        },
+                                        {
+                                            "name": "REVIEWER",
+                                            "required": true,
+                                            "allowNull": false
+                                        },
+                                        {
+                                            "name": "REVIEW_DATE",
+                                            "type": "date",
+                                            "required": true
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "inputs": [
+                        {
+                            "from": [
+                                "productReview",
+                                "id"
+                            ],
+                            "to": [
+                                "selectProductReviewInput",
+                                "id"
+                            ]
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "from": [
+                                "selectProductReviewOutput"
+                            ],
+                            "to": [
+                                "selectProductReviewOutput"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "fork",
+                    "expression": "selectProductReviewOutput?.ID",
+                    "children": [
+                        {
+                            "label": "$null",
+                            "lines": [
+                                {
+                                    "type": "set",
+                                    "expression": "400",
+                                    "to": [
+                                        "responseCode"
+                                    ]
+                                },
+                                {
+                                    "type": "set",
+                                    "expression": "Failed to create product review",
+                                    "to": [
+                                        "APIException",
+                                        "message"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "label": "$else",
+                            "lines": [
+                                {
+                                    "from": [
+                                        "selectProductReviewOutput",
+                                        "ID"
+                                    ],
+                                    "to": [
+                                        "APIResponse",
+                                        "productReview",
+                                        "id"
+                                    ]
+                                },
+                                {
+                                    "from": [
+                                        "selectProductReviewOutput",
+                                        "PRODUCT_GUID"
+                                    ],
+                                    "to": [
+                                        "APIResponse",
+                                        "productReview",
+                                        "product_guid"
+                                    ]
+                                },
+                                {
+                                    "from": [
+                                        "selectProductReviewOutput",
+                                        "RATING"
+                                    ],
+                                    "to": [
+                                        "APIResponse",
+                                        "productReview",
+                                        "rating"
+                                    ]
+                                },
+                                {
+                                    "from": [
+                                        "selectProductReviewOutput",
+                                        "REVIEW"
+                                    ],
+                                    "to": [
+                                        "APIResponse",
+                                        "productReview",
+                                        "review"
+                                    ]
+                                },
+                                {
+                                    "from": [
+                                        "selectProductReviewOutput",
+                                        "REVIEWER"
+                                    ],
+                                    "to": [
+                                        "APIResponse",
+                                        "productReview",
+                                        "reviewer"
+                                    ]
+                                },
+                                {
+                                    "from": [
+                                        "selectProductReviewOutput",
+                                        "REVIEW_DATE"
+                                    ],
+                                    "to": [
+                                        "APIResponse",
+                                        "productReview",
+                                        "review_date"
+                                    ]
+                                },
+                                {
+                                    "type": "set",
+                                    "expression": "200",
+                                    "to": [
+                                        "responseCode"
+                                    ]
+                                },
+                                {
+                                    "type": "set",
+                                    "expression": "Successfully create product review",
+                                    "to": [
+                                        "APIResponse",
+                                        "message"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "catch": [
+                {
+                    "type": "invokeCode",
+                    "className": "io.toro.martini.LoggerMethods",
+                    "methodName": "error",
+                    "parameters": [
+                        "java.lang.String",
+                        "java.lang.Throwable"
+                    ],
+                    "inputs": [
+                        {
+                            "from": [
+                                "$gloopException",
+                                "gloopStackTrace"
+                            ],
+                            "to": [
+                                "message"
+                            ]
+                        },
+                        {
+                            "from": [
+                                "$gloopException",
+                                "realException"
+                            ],
+                            "to": [
+                                "throwable"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

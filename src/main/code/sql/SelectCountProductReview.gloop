@@ -1,0 +1,33 @@
+{
+    "type": "customSql",
+    "input": [
+        {
+            "name": "selectCountProductReviewInput",
+            "type": "model",
+            "gloopProperties": [
+                {
+                    "name": "$martiniConnectionPool"
+                },
+                {
+                    "name": "productGuid"
+                }
+            ]
+        }
+    ],
+    "output": [
+        {
+            "name": "selectCountProductReviewOutput",
+            "type": "model",
+            "gloopProperties": [
+                {
+                    "name": "TOTAL_REVIEW",
+                    "type": "long",
+                    "required": true
+                }
+            ]
+        }
+    ],
+    "connectionPoolName": "product_review",
+    "sqlType": "SELECT_SINGLE",
+    "query": "SELECT \n\tCOUNT(*) AS \"TOTAL_REVIEW\"\nFROM\n\t\"PRODUCT_REVIEW\"\nWHERE\n\t\"PRODUCT_GUID\" = :productGuid"
+}

@@ -1,0 +1,39 @@
+{
+    "type": "customSql",
+    "input": [
+        {
+            "name": "updateProductReviewInput",
+            "type": "model",
+            "gloopProperties": [
+                {
+                    "name": "$martiniConnectionPool"
+                },
+                {
+                    "name": "productGuid"
+                },
+                {
+                    "name": "rating",
+                    "type": "integer"
+                },
+                {
+                    "name": "review"
+                },
+                {
+                    "name": "reviewer"
+                },
+                {
+                    "name": "id"
+                }
+            ]
+        }
+    ],
+    "output": [
+        {
+            "name": "updateCount",
+            "type": "integer"
+        }
+    ],
+    "connectionPoolName": "product_review",
+    "sqlType": "UPDATE",
+    "query": "UPDATE\n\t\"PRODUCT_REVIEW\"\nSET\n\t\"PRODUCT_GUID\" = COALESCE( :productGuid, \"PRODUCT_GUID\" ),\n\t\"RATING\" = COALESCE( :rating, \"RATING\" ),\n\t\"REVIEW\" = COALESCE( :review, \"REVIEW\" ),\n\t\"REVIEWER\" = COALESCE( :reviewer, \"REVIEWER\" )\nWHERE\n\t\"ID\" = :id"
+}

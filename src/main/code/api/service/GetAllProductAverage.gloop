@@ -1,0 +1,228 @@
+{
+    "output": [
+        {
+            "name": "responseCode",
+            "type": "integer"
+        },
+        {
+            "name": "APIResponse",
+            "type": "model",
+            "reference": "io.toro.martini.api.APIResponse",
+            "gloopProperties": [
+                {
+                    "name": "productsAverage",
+                    "type": "model",
+                    "array": true,
+                    "gloopProperties": [
+                        {
+                            "name": "product_guid"
+                        },
+                        {
+                            "name": "average",
+                            "type": "double"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "APIException",
+            "type": "model",
+            "reference": "io.toro.martini.api.APIException"
+        }
+    ],
+    "steps": [
+        {
+            "type": "block",
+            "blockType": "TRY_CATCH",
+            "children": [
+                {
+                    "type": "invokeGloop",
+                    "name": "sql.SelectAllProductGuid",
+                    "declare": [
+                        {
+                            "variables": [
+                                {
+                                    "name": "selectAllProductGuidInputCursor",
+                                    "type": "model",
+                                    "array": true,
+                                    "gloopProperties": [
+                                        {
+                                            "name": "PRODUCT_GUID",
+                                            "required": true,
+                                            "allowNull": false
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "from": [
+                                "selectAllProductGuidInputCursor"
+                            ],
+                            "to": [
+                                "selectAllProductGuidInputCursor"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "iterate",
+                    "input": {
+                        "path": [
+                            "selectAllProductGuidInputCursor"
+                        ]
+                    },
+                    "output": {
+                        "path": [
+                            "APIResponse",
+                            "productsAverage"
+                        ]
+                    },
+                    "children": [
+                        {
+                            "type": "invokeGloop",
+                            "name": "sql.SelectAverageProductReview",
+                            "declare": [
+                                {
+                                    "variables": [
+                                        {
+                                            "name": "selectAverageProductReviewOutput",
+                                            "type": "model",
+                                            "gloopProperties": [
+                                                {
+                                                    "name": "AVERAGE",
+                                                    "type": "bigDecimal",
+                                                    "required": true
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "inputs": [
+                                {
+                                    "from": [
+                                        "selectAllProductGuidInputCursor",
+                                        "PRODUCT_GUID"
+                                    ],
+                                    "to": [
+                                        "selectAverageProductReviewInput",
+                                        "productGuid"
+                                    ]
+                                }
+                            ],
+                            "outputs": [
+                                {
+                                    "from": [
+                                        "selectAverageProductReviewOutput"
+                                    ],
+                                    "to": [
+                                        "selectAverageProductReviewOutput"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "lines": [
+                                {
+                                    "from": [
+                                        "selectAllProductGuidInputCursor",
+                                        "PRODUCT_GUID"
+                                    ],
+                                    "to": [
+                                        "APIResponse",
+                                        "productsAverage",
+                                        "product_guid"
+                                    ]
+                                },
+                                {
+                                    "from": [
+                                        "selectAverageProductReviewOutput",
+                                        "AVERAGE"
+                                    ],
+                                    "to": [
+                                        "APIResponse",
+                                        "productsAverage",
+                                        "average"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "lines": [
+                        {
+                            "type": "set",
+                            "expression": "200",
+                            "to": [
+                                "responseCode"
+                            ]
+                        },
+                        {
+                            "type": "set",
+                            "expression": "Successfully get all products average",
+                            "to": [
+                                "APIResponse",
+                                "message"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "catch": [
+                {
+                    "lines": [
+                        {
+                            "type": "set",
+                            "expression": "400",
+                            "to": [
+                                "responseCode"
+                            ]
+                        },
+                        {
+                            "type": "set",
+                            "expression": "Failed to get all products average",
+                            "to": [
+                                "APIException",
+                                "message"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "invokeCode",
+                    "className": "io.toro.martini.LoggerMethods",
+                    "methodName": "error",
+                    "parameters": [
+                        "java.lang.String",
+                        "java.lang.Throwable"
+                    ],
+                    "inputs": [
+                        {
+                            "from": [
+                                "$gloopException",
+                                "gloopStackTrace"
+                            ],
+                            "to": [
+                                "message"
+                            ]
+                        },
+                        {
+                            "from": [
+                                "$gloopException",
+                                "realException"
+                            ],
+                            "to": [
+                                "throwable"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

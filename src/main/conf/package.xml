@@ -1,0 +1,5 @@
+<package stateOnStartup="started" id="product-review-api" version="1.0.0" context-path="/product-review-api">
+  <package-dependencies/>
+  <startup-services/>
+  <shutdown-services/>
+</package>

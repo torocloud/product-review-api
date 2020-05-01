@@ -1,0 +1,33 @@
+{
+    "type": "customSql",
+    "input": [
+        {
+            "name": "selectAverageProductReviewInput",
+            "type": "model",
+            "gloopProperties": [
+                {
+                    "name": "$martiniConnectionPool"
+                },
+                {
+                    "name": "productGuid"
+                }
+            ]
+        }
+    ],
+    "output": [
+        {
+            "name": "selectAverageProductReviewOutput",
+            "type": "model",
+            "gloopProperties": [
+                {
+                    "name": "AVERAGE",
+                    "type": "bigDecimal",
+                    "required": true
+                }
+            ]
+        }
+    ],
+    "connectionPoolName": "product_review",
+    "sqlType": "SELECT_SINGLE",
+    "query": "SELECT \n\tAVG( CAST(\"RATING\" AS DECIMAL(10,2) ) ) AS \"AVERAGE\"\nFROM\n\t\"PRODUCT_REVIEW\"\nWHERE\n\t\"PRODUCT_GUID\" = :productGuid"
+}

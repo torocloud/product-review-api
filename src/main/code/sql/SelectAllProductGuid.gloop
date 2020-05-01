@@ -1,0 +1,35 @@
+{
+    "type": "customSql",
+    "input": [
+        {
+            "name": "selectAllProductGuidInput",
+            "type": "model",
+            "gloopProperties": [
+                {
+                    "name": "$martiniConnectionPool"
+                },
+                {
+                    "name": "$limit",
+                    "type": "integer"
+                }
+            ]
+        }
+    ],
+    "output": [
+        {
+            "name": "selectAllProductGuidInputCursor",
+            "type": "model",
+            "array": true,
+            "gloopProperties": [
+                {
+                    "name": "PRODUCT_GUID",
+                    "required": true,
+                    "allowNull": false
+                }
+            ]
+        }
+    ],
+    "connectionPoolName": "product_review",
+    "sqlType": "SELECT_MULTI",
+    "query": "SELECT\n\tDISTINCT(\"PRODUCT_GUID\")\nFROM\n\t\"PRODUCT_REVIEW\""
+}

@@ -1,0 +1,61 @@
+{
+    "type": "customSql",
+    "input": [
+        {
+            "name": "selectAllProductReviewInput",
+            "type": "model",
+            "gloopProperties": [
+                {
+                    "name": "$martiniConnectionPool"
+                },
+                {
+                    "name": "$limit",
+                    "type": "integer"
+                }
+            ]
+        }
+    ],
+    "output": [
+        {
+            "name": "selectAllProductReviewInputCursor",
+            "type": "model",
+            "array": true,
+            "gloopProperties": [
+                {
+                    "name": "ID",
+                    "required": true,
+                    "allowNull": false
+                },
+                {
+                    "name": "PRODUCT_GUID",
+                    "required": true,
+                    "allowNull": false
+                },
+                {
+                    "name": "RATING",
+                    "type": "integer",
+                    "required": true,
+                    "allowNull": false
+                },
+                {
+                    "name": "REVIEW",
+                    "required": true,
+                    "allowNull": false
+                },
+                {
+                    "name": "REVIEWER",
+                    "required": true,
+                    "allowNull": false
+                },
+                {
+                    "name": "REVIEW_DATE",
+                    "type": "date",
+                    "required": true
+                }
+            ]
+        }
+    ],
+    "connectionPoolName": "product_review",
+    "sqlType": "SELECT_MULTI",
+    "query": "SELECT *\nFROM\n\t\"PRODUCT_REVIEW\""
+}

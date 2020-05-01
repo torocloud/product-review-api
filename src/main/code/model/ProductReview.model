@@ -1,0 +1,27 @@
+{
+    "name": "ProductReview",
+    "type": "model",
+    "gloopProperties": [
+        {
+            "name": "id"
+        },
+        {
+            "name": "product_guid"
+        },
+        {
+            "name": "rating",
+            "type": "integer"
+        },
+        {
+            "name": "review"
+        },
+        {
+            "name": "reviewer"
+        },
+        {
+            "name": "review_date",
+            "type": "date",
+            "defaultValue": "now"
+        }
+    ]
+}

@@ -1,0 +1,256 @@
+{
+    "input": [
+        {
+            "name": "productReview",
+            "type": "model",
+            "reference": "model.ProductReview"
+        }
+    ],
+    "output": [
+        {
+            "name": "responseCode",
+            "type": "integer"
+        },
+        {
+            "name": "APIResponse",
+            "type": "model",
+            "reference": "io.toro.martini.api.APIResponse",
+            "gloopProperties": [
+                {
+                    "name": "productReview",
+                    "type": "model",
+                    "reference": "model.ProductReview"
+                }
+            ]
+        },
+        {
+            "name": "APIException",
+            "type": "model",
+            "reference": "io.toro.martini.api.APIException"
+        }
+    ],
+    "steps": [
+        {
+            "type": "block",
+            "blockType": "TRY_CATCH",
+            "children": [
+                {
+                    "type": "fork",
+                    "expression": "productReview.id",
+                    "children": [
+                        {
+                            "type": "block",
+                            "label": "$null",
+                            "children": [
+                                {
+                                    "lines": [
+                                        {
+                                            "type": "set",
+                                            "expression": "400",
+                                            "to": [
+                                                "responseCode"
+                                            ]
+                                        },
+                                        {
+                                            "type": "set",
+                                            "expression": "Product Review ID is empty",
+                                            "to": [
+                                                "APIException",
+                                                "message"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "break",
+                                    "expression": "$gloopService"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "invokeGloop",
+                    "name": "sql.UpdateProductReview",
+                    "declare": [
+                        {
+                            "variables": [
+                                {
+                                    "name": "updateCount",
+                                    "type": "integer"
+                                }
+                            ]
+                        }
+                    ],
+                    "inputs": [
+                        {
+                            "from": [
+                                "productReview",
+                                "id"
+                            ],
+                            "to": [
+                                "updateProductReviewInput",
+                                "id"
+                            ]
+                        },
+                        {
+                            "from": [
+                                "productReview",
+                                "product_guid"
+                            ],
+                            "to": [
+                                "updateProductReviewInput",
+                                "productGuid"
+                            ]
+                        },
+                        {
+                            "from": [
+                                "productReview",
+                                "rating"
+                            ],
+                            "to": [
+                                "updateProductReviewInput",
+                                "rating"
+                            ]
+                        },
+                        {
+                            "from": [
+                                "productReview",
+                                "review"
+                            ],
+                            "to": [
+                                "updateProductReviewInput",
+                                "review"
+                            ]
+                        },
+                        {
+                            "from": [
+                                "productReview",
+                                "reviewer"
+                            ],
+                            "to": [
+                                "updateProductReviewInput",
+                                "reviewer"
+                            ]
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "from": [
+                                "updateCount"
+                            ],
+                            "to": [
+                                "updateCount"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "fork",
+                    "expression": "updateCount > 0",
+                    "children": [
+                        {
+                            "label": "true",
+                            "lines": [
+                                {
+                                    "from": [
+                                        "productReview"
+                                    ],
+                                    "to": [
+                                        "APIResponse",
+                                        "productReview"
+                                    ]
+                                },
+                                {
+                                    "type": "set",
+                                    "expression": "200",
+                                    "to": [
+                                        "responseCode"
+                                    ]
+                                },
+                                {
+                                    "type": "set",
+                                    "expression": "Successfully updated product review",
+                                    "to": [
+                                        "APIResponse",
+                                        "message"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "label": "false",
+                            "lines": [
+                                {
+                                    "type": "set",
+                                    "expression": "400",
+                                    "to": [
+                                        "responseCode"
+                                    ]
+                                },
+                                {
+                                    "type": "set",
+                                    "expression": "Failed to update product review",
+                                    "to": [
+                                        "APIException",
+                                        "message"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "catch": [
+                {
+                    "lines": [
+                        {
+                            "type": "set",
+                            "expression": "400",
+                            "to": [
+                                "responseCode"
+                            ]
+                        },
+                        {
+                            "type": "set",
+                            "expression": "Failed to update product review",
+                            "to": [
+                                "APIException",
+                                "message"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "invokeCode",
+                    "className": "io.toro.martini.LoggerMethods",
+                    "methodName": "error",
+                    "parameters": [
+                        "java.lang.String",
+                        "java.lang.Throwable"
+                    ],
+                    "inputs": [
+                        {
+                            "from": [
+                                "$gloopException",
+                                "gloopStackTrace"
+                            ],
+                            "to": [
+                                "message"
+                            ]
+                        },
+                        {
+                            "from": [
+                                "$gloopException",
+                                "realException"
+                            ],
+                            "to": [
+                                "throwable"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
